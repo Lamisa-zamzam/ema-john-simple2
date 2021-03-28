@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import fakeData from "../../fakeData";
 import Cart from "../Cart/Cart";
 import Product from "../Product/Product";
 import {
@@ -10,18 +9,28 @@ import "./Shop.css";
 import { Link } from "react-router-dom";
 
 const Shop = () => {
-    const firstTen = fakeData.slice(0, 10);
-    const [products, setProducts] = useState(firstTen);
+    const [products, setProducts] = useState([]);
     const [cart, setCart] = useState([]);
+    document.title = "Shop More";
+
+    useEffect(() => {
+        fetch("https://polar-beach-48875.herokuapp.com/products")
+            .then((res) => res.json())
+            .then((data) => {
+                setProducts(data);
+            });
+    }, []);
+
     useEffect(() => {
         const savedCart = getDatabaseCart();
         const productKeys = Object.keys(savedCart);
-        const previousCart = productKeys.map((existingKey) => {
-            const product = fakeData.find((pd) => pd.key === existingKey);
-            product.quantity = savedCart[existingKey];
-            return product;
-        });
-        setCart(previousCart);
+        fetch("https://polar-beach-48875.herokuapp.com/productsByKeys", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(productKeys),
+        })
+            .then((res) => res.json())
+            .then((data) => setCart(data));
     }, []);
 
     const handleAddProduct = (product) => {
@@ -46,24 +55,20 @@ const Shop = () => {
         <div className="twin-container">
             <div className="product-container">
                 {products.map((product) => (
-                    
                     <Product
                         key={product.key}
                         showAddToCart={true}
                         handleAddProduct={handleAddProduct}
                         product={product}
                     ></Product>
-                    
-                )
-                )
-                }
+                ))}
             </div>
             <div className="cart-container">
                 <Cart cart={cart}>
                     <Link to="/review">
                         {" "}
                         <button className="main-button">Review Order</button>
-                    </Link> 
+                    </Link>
                 </Cart>
             </div>
         </div>
