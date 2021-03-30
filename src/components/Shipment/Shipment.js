@@ -17,7 +17,7 @@ const Shipment = () => {
             shipment: data,
             orderTime: new Date(),
         };
-        fetch("http://localhost:5000/addOrder", {
+        fetch("https://polar-beach-48875.herokuapp.com/addOrder", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(orderDetails),
