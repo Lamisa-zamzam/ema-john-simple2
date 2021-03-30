@@ -28,7 +28,7 @@ const Review = () => {
         console.log(savedCart);
         const productKeys = Object.keys(savedCart);
 
-        fetch("https://polar-beach-48875.herokuapp.com/productsByKeys", {
+        fetch("http://localhost:5000/productsByKeys", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(productKeys),
